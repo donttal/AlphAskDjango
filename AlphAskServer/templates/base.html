@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>全文搜索基础页面</title>
+    <style>
+        span.highlighted{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<form role="search" method="get" id="searchform" action="{%  url 'haystack_search'  %}">
+  <input type="search" name="q" placeholder="搜索" required>
+  <button type="submit" value="搜索"><span class="ion-ios-search-strong"></span></button>
+</form>
+{% block main %}{% endblock %}
+</body>
+</html>

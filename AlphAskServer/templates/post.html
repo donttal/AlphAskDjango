@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用POST提交数据</title>
+</head>
+<body>
+    <form action="/polls/qa/search-post" method="post">
+        {% csrf_token %}
+        <input type="text" name="q">
+        <input type="submit" value="Submit">
+    </form>
+
+    <p>{{ rlt }}</p>
+</body>
+</html>

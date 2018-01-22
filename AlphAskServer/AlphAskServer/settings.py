@@ -34,15 +34,30 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admindocs'
+    'django.contrib.admindocs',
+    'haystack',
+    'polls',
 ]
+
+# 设置每页显示的数目，设置为8
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 8
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'polls.whoosh_cn_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+        'INCLUDE_SPELLING': True,
+    },
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
