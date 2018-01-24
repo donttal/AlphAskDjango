@@ -10,7 +10,7 @@ from haystack.forms import SearchForm
 
 # Create your views here.
 def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    latest_question_list = Question.objects.all()
     context = {'latest_question_list': latest_question_list}
     return render(request, 'index.html', context)
 
@@ -24,12 +24,12 @@ def answer(request, question):
     return render(request, 'detail.html', context)
 
 
-s1 = r'Linux是一套自由加开放源代码的类Unix操作系统，诞生于1991年10月5日（第一次正式向外公布），由芬兰学生Linus Torvalds和后来陆续加入的众多爱好者共同开发完成。'
-
-
 def addObject(request):
-    test1 = Question(keyword1='发展史', keyword2='liunx', answer=s1, views=10, pub_date=timezone.now())
-    test1.save()
+    with open(r'AlphAskServer\dataprocessing\result.txt', 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip().split(',')
+            test1 = Question(keyword1=line[0], keyword2=line[1], answer=line[2], views=10, pub_date=timezone.now())
+            test1.save()
     return HttpResponse("<p>数据添加成功</p>")
 
 
@@ -65,13 +65,13 @@ def search(request):
 
 def upload(request):
     if request.method == "POST":
-        handle_upload_file(request.FILES['file'], str(request.FILES['file']))
-        return HttpResponse('Successful')  # 此处简单返回一个成功的消息，在实际应用中可以返回到指定的页面中
-
+        handle_upload_file(request.FILES['file'])
+        addObject(request)
     return render_to_response('upload.html')
 
 
-def handle_upload_file(file, filename):
+def handle_upload_file(file):
+    filename = 'test.txt'
     path = r'AlphAskServer/dataprocessing'  # 上传文件的保存路径，可以自己指定任意的路径
     if not os.path.exists(path):
         os.makedirs(path)
