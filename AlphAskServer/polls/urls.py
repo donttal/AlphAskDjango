@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^qa/search', views.search, name='search'),
     url(r'^qa/search-post$', views.search_post, name='search'),
     url(r'^search/', include('haystack.urls'), name='haystack_search'),
+    url(r'^upload/$', views.upload, name='upload'),
 ]

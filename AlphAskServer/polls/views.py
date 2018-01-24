@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from polls.models import Question
 from django.utils import timezone
 from AlphAskServer.dataprocessing.cutWord import cut
+import os
 from django.db.models import Q
 from haystack.forms import SearchForm
 
@@ -61,3 +62,19 @@ def search(request):
         context = {'question': question1}
     return render(request, 'detail.html', context)
 
+
+def upload(request):
+    if request.method == "POST":
+        handle_upload_file(request.FILES['file'], str(request.FILES['file']))
+        return HttpResponse('Successful')  # 此处简单返回一个成功的消息，在实际应用中可以返回到指定的页面中
+
+    return render_to_response('upload.html')
+
+
+def handle_upload_file(file, filename):
+    path = r'AlphAskServer/dataprocessing'  # 上传文件的保存路径，可以自己指定任意的路径
+    if not os.path.exists(path):
+        os.makedirs(path)
+    with open(path + filename, 'wb+')as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
