@@ -45,10 +45,6 @@ INSTALLED_APPS = [
     'polls',
 ]
 
-# 设置每页显示的数目，设置为8
-HAYSTACK_SEARCH_RESULTS_PER_PAGE = 8
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
-
 
 HAYSTACK_CONNECTIONS = {
     'default': {
@@ -57,6 +53,10 @@ HAYSTACK_CONNECTIONS = {
         'INCLUDE_SPELLING': True,
     },
 }
+
+# 设置每页显示的数目，设置为8
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 8
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 
 MIDDLEWARE = [

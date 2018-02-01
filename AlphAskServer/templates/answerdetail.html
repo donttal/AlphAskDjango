@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多字段模糊匹配得到最终答案结果</title>
+</head>
+<body>
+{% if questions %}
+    <ul>
+        {% if qu in questions %}
+            {% for qu in questions %}
+                <li><a href="/polls/{{ qu.id }}/">{{ qu.keyword1}}+{{qu.keyword2}}</a></li>
+                <li>{{ qu.answer }}</li>
+            {% endfor %}
+        {% else %}
+            <li>{{ questions.answer }}</li>
+        {% endif %}
+    </ul>
+{% else %}
+    <p>没有匹配成功的答案</p>
+{% endif %}
+</body>
+</html>

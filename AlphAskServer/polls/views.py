@@ -5,6 +5,7 @@ from django.utils import timezone
 from AlphAskServer.dataprocessing.cutWord import cut
 import os
 from django.db.models import Q
+import re
 from haystack.forms import SearchForm
 
 
@@ -15,13 +16,23 @@ def index(request):
     return render(request, 'index.html', context)
 
 
+def search_form(requset):
+    return render_to_response('search_form.html')
+
+
 # 客户端提出问题，经过问题的分词
-def answer(request, question):
-    list1 = cut(question)
-    queryset = Question.objects.filter(keyword1=list1[1], keyword2=list1[0])
-    question = get_object_or_404(queryset)
-    context = {'question': question}
-    return render(request, 'detail.html', context)
+def answer(request):
+    request.encoding = 'utf-8'
+    context = {}
+    if request.GET:
+        question = request.GET['q']
+        list1 = cut(question)
+        queryset = Question.objects.filter(Q(keyword1__icontains=list1[1], keyword2__icontains=list1[0])
+                                           | Q(keyword1__icontains=list1[0], keyword2__icontains=list1[1])
+                                           | Q(answer__icontains=list1[0]))
+        questions = get_object_or_404(queryset)
+        context = {'questions': questions}
+    return render(request, 'answerdetail.html', context)
 
 
 def addObject(request):
@@ -33,33 +44,10 @@ def addObject(request):
     return HttpResponse("<p>数据添加成功</p>")
 
 
-# 表单
-def search_from(request):
-    return render_to_response("search_form.html")
-
-
-def search_post(request):
-    ctx = {}
-    if request.POST:
-        ctx['rlt'] = request.POST['q']
-    return render(request, "post.html", ctx)
-
-
 def detail(request, question_id):
     queryset = Question.objects.filter(id=question_id)
     question = get_object_or_404(queryset)
     context = {'question': question}
-    return render(request, 'detail.html', context)
-
-
-def search(request):
-    context = {}
-    if request.GET:
-        question = request.GET['q']
-        list1 = cut(question)
-        queryset = Question.objects.filter(keyword1=list1[1], keyword2=list1[0])
-        question1 = get_object_or_404(queryset)
-        context = {'question': question1}
     return render(request, 'detail.html', context)
 
 
@@ -78,3 +66,10 @@ def handle_upload_file(file):
     with open(path + filename, 'wb+')as destination:
         for chunk in file.chunks():
             destination.write(chunk)
+
+
+def full_text_cut(request):
+    context = {}
+    if request.GET:
+        question = request.GET['q']
+        list1 = cut(question)
